@@ -1,8 +1,8 @@
 {% from "bird/map.jinja" import server with context %}
 
-{%- if server.enabled %}
+{%- if 'bird' in pillar and 'server' in pillar['bird'] %}
 
-{%- if server.network.get('engine', 'baremetal') == 'baremetal' %}
+{%- if server.get('network', {}).get('engine', 'baremetal') == 'baremetal' %}
 
 bird_packages:
   pkg.installed:
