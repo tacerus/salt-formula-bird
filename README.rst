@@ -12,20 +12,17 @@ Sample Pillars
 
     bird:
       server:
-        enabled: True
-        logging:
-          engine: syslog
         network:
           engine: baremetal
-        protocol:
+        protocols:
           my_ospf:
             type: ospf
             tick: 2
             rfc1583compat: True
             ecmp: True
-            area:
+            areas:
               0.0.0.0:
-                interface:
+                interfaces:
                   p3p1:
                     type: ptp
                     paramX: xxx
