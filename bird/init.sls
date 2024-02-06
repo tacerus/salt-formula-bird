@@ -1,5 +1,4 @@
-
+{%- if pillar.bird.server is defined %}
 include:
-{% if pillar.bird.server is defined %}
 - bird.server
-{% endif %}
+{%- endif %}
