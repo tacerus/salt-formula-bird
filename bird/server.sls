@@ -1,8 +1,8 @@
 {% from "bird/map.jinja" import server with context %}
 
-{%- if server.enabled %}
+{%- if 'bird' in pillar and 'server' in pillar['bird'] %}
 
-{%- if server.network.get('engine', 'baremetal') == 'baremetal' %}
+{%- if server.get('network', {}).get('engine', 'baremetal') == 'baremetal' %}
 
 bird_packages:
   pkg.installed:
@@ -13,6 +13,7 @@ bird_config:
   - name: {{ server.config }}
   - source: salt://bird/files/bird.conf
   - template: jinja
+  - check_cmd: sh -xc 'if test -S /run/bird/bird.ctl; then birdc configure check \"$1\"; else echo "No socket, skipping check."; fi' x
   - require:
     - pkg: bird_packages
 

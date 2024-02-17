@@ -1,0 +1,71 @@
+bird:
+  server:
+    router_id: 0.0.1.1
+    definitions:
+      myNetworks:
+        - 2001:0db8::100/64
+        - 2001:0db8::200/64
+    filters:
+      myFilter:
+        pre:
+          - 'print "Something written before the if-conditionals"'
+        (net ~ myNetworks):
+          - 'print "Something inside this if-conditional"'
+          - accept
+        post:
+          - 'print "Something written after the if-conditionals"'
+          - reject
+    logs:
+      syslog: all
+      /var/log/bird.log:  # files being writable is out of scope, modern packaging assumes syslog
+        - auth
+        - remote
+    watchdogs:
+      warning: 5s
+      timeout: 30s
+    protocols:
+      direct:
+        # dual stack protocols specify the families as a keys
+        ipv4: null
+        ipv6: null
+      kernel_4:
+        # single stack protocols with family specific configuration specify the family as a key
+        ipv4:
+          table: master4
+        learn: true
+        kernel:
+          table:
+            10
+				# if "type" is defined, the name is only formula internal and the section will be written as "kernel { ... }"
+        type: kernel
+      kernel_6:
+        # single stack protocols without family specific configuration specify the family as "family"
+				family: ipv6
+        type: kernel
+      # if "type" is not defined, the name is assumed to be the type - here the section will be written as "static { ... }"
+      static:
+        family: ipv4
+        routes:
+          192.0.2.0/24: 192.0.2.1
+      ospf6:
+        type: ospf
+        # ospf v3
+        version: 3
+        ipv6:
+          # apply filters defined under bird:server:filters
+          filters:
+            import:
+              # as a list ...
+              - myFilter
+            # ... or as a string
+            export: myFilter
+          areas:
+            0:
+              interfaces:
+                eth0:
+                  # arbitrary key/value pairs are supported under area interfaces
+                  type: broadcast
+                  cost: 10
+                  hello: 5
+              networks:
+                192.0.2.0/24
