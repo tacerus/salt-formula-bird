@@ -13,6 +13,7 @@ bird_config:
   - name: {{ server.config }}
   - source: salt://bird/files/bird.conf
   - template: jinja
+  - check_cmd: sh -xc 'if test -S /run/bird/bird.ctl; then birdc configure check \"$1\"; else echo "No socket, skipping check."; fi' x
   - require:
     - pkg: bird_packages
 
