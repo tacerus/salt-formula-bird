@@ -2,6 +2,8 @@ bird:
   server:
     router_id: 0.0.1.1
     definitions:
+      myExternalNetworks:
+        include: /run/networks.dat
       myNetworks:
         - 2001:0db8::100/64
         - 2001:0db8::200/64
