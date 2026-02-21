@@ -14,6 +14,7 @@ bird_config:
   - source: salt://bird/files/bird.conf
   - template: jinja
   - check_cmd: sh -xc 'if test -S /run/bird/bird.ctl; then birdc configure check \"$1\"; else echo "No socket, skipping check."; fi' x
+  - tmp_dir: /var/lib/bird
   - require:
     - pkg: bird_packages
 
